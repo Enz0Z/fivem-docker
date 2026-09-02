@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 # ponytail: grep instead of jq so it runs anywhere (CI runner, Git Bash, busybox)
 ver=$(curl -fsSL https://changelogs-live.fivem.net/api/changelog/versions/linux/server \
-    | grep -o '"latest_download":"[^"]*"' | grep -o '[0-9]*-[0-9a-f]*/fx' | cut -d/ -f1)
+    | grep -o '"recommended_download":"[^"]*"' | grep -o '[0-9]*-[0-9a-f]*/fx' | cut -d/ -f1)
 num=${ver%%-*}
 data=$(curl -fsSL https://api.github.com/repos/citizenfx/cfx-server-data/commits/master \
     | grep -m1 -o '"sha": *"[0-9a-f]\{40\}"' | grep -o '[0-9a-f]\{40\}')

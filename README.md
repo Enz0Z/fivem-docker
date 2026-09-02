@@ -3,10 +3,10 @@
 [![update](https://github.com/Enz0Z/fivem-docker/actions/workflows/update.yml/badge.svg)](https://github.com/Enz0Z/fivem-docker/actions/workflows/update.yml)
 
 Docker image for a FiveM (FXServer) dedicated server, based on [spritsail/fivem](https://github.com/spritsail/fivem).
-A GitHub Actions workflow checks the FiveM artifact feed **every day** and, when a new `latest` build is published,
+A GitHub Actions workflow checks the FiveM artifact feed **every day** and, when a new `recommended` build is published,
 bumps the Dockerfile, commits it and pushes a fresh image to `ghcr.io/enz0z/fivem-docker`.
 
-Tags: `latest` and the FiveM build number (e.g. `35713`).
+Tags: `latest` and the FiveM build number (e.g. `35245`).
 
 ## Usage
 

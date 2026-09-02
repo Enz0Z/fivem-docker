@@ -1,5 +1,5 @@
-ARG FIVEM_NUM=35713
-ARG FIVEM_VER=35713-03dcc562ca175e24eb018569ecb919b4b7a56824
+ARG FIVEM_NUM=35245
+ARG FIVEM_VER=35245-6efb47dff473c0e2a12fb50b08d74c0eb24a50d5
 ARG DATA_VER=32d98e7524b952faf8b220d719615b0346b0a6cc
 
 FROM alpine:3.23 AS builder
@@ -33,7 +33,7 @@ ARG DATA_VER
 LABEL org.opencontainers.image.title="FiveM" \
       org.opencontainers.image.url="https://fivem.net" \
       org.opencontainers.image.source="https://github.com/Enz0Z/fivem-docker" \
-      org.opencontainers.image.description="FXServer (FiveM) dedicated server, auto-updated daily to the latest artifact." \
+      org.opencontainers.image.description="FXServer (FiveM) dedicated server, auto-updated daily to the recommended artifact." \
       org.opencontainers.image.version=${FIVEM_NUM} \
       fivem.version=${FIVEM_VER} \
       fivem.data_version=${DATA_VER}
