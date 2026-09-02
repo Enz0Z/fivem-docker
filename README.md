@@ -43,3 +43,9 @@ Set `NO_DEFAULT_CONFIG=1`, expose port `40120` and mount `/txData` to persist it
 ```sh
 ./update.sh && git commit -am "Update FiveM" && git push
 ```
+
+## Credits
+
+The Dockerfile, entrypoint and default `server.cfg` come from [spritsail/fivem](https://github.com/spritsail/fivem),
+written and maintained by the [Spritsail](https://github.com/spritsail) team (Joe Groocock, Adam Dodman and contributors).
+This repo only adds the daily auto-update workflow on top of their work. All credit for the image itself goes to them.
