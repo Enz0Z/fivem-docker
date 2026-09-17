@@ -29,7 +29,7 @@ if [ -z "${NO_LICENSE_KEY}${NO_LICENCE_KEY}" ]; then
         LICENSE_KEY="${LICENCE_KEY}"
     fi
 
-    if [ -z "${NO_DEFAULT_CONFIG}"] && [ -z "${LICENSE_KEY}" ]; then
+    if [ -z "${NO_DEFAULT_CONFIG}" ] && [ -z "${LICENSE_KEY}" ]; then
         >&2 printf "License key not found in environment, please create one at https://keymaster.fivem.net!\n"
         exit 1
     fi
@@ -39,7 +39,9 @@ if [ -z "${NO_LICENSE_KEY}${NO_LICENCE_KEY}" ]; then
         exit 1
     fi
 
-    CONFIG_ARGS="$CONFIG_ARGS +set sv_licenseKey ${LICENSE_KEY}"
+    if [ -n "${LICENSE_KEY}" ]; then
+        CONFIG_ARGS="$CONFIG_ARGS +set sv_licenseKey ${LICENSE_KEY}"
+    fi
 fi
 
 # Mirrors each artifact's run.sh: FiveM for GTAV Enhanced ships cfx-server, legacy ships FXServer

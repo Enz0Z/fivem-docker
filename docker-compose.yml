@@ -7,6 +7,10 @@ services:
     restart: always
     stdin_open: true
     tty: true
+    # Enhanced only: Docker's default seccomp profile blocks io_uring and the server hangs at boot without it.
+    # WARNING: this disables all syscall filtering for the container, see README.
+    # security_opt:
+    #   - seccomp=unconfined
     volumes:
       - "./config:/config"
       # Persist txAdmin data
