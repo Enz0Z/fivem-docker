@@ -1,6 +1,8 @@
 services:
   fivem:
     image: ghcr.io/enz0z/fivem-docker
+    # FiveM for GTAV Enhanced:
+    # image: ghcr.io/enz0z/fivem-docker:enhanced
     container_name: fivem
     restart: always
     stdin_open: true

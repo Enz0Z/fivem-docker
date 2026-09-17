@@ -1,32 +1,35 @@
-ARG FIVEM_NUM=35245
-ARG FIVEM_VER=35245-6efb47dff473c0e2a12fb50b08d74c0eb24a50d5
+# Pinned versions live in legacy.env / enhanced.env; build with
+#   docker build $(sed 's/^/--build-arg /' legacy.env) .
+ARG FIVEM_NUM
+ARG FIVEM_URL
 ARG DATA_VER=32d98e7524b952faf8b220d719615b0346b0a6cc
 
 FROM alpine:3.23 AS builder
 
-ARG FIVEM_VER
+ARG FIVEM_URL
 ARG DATA_VER
 
-WORKDIR /output
+WORKDIR /fx
 
-RUN wget -O- https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/${FIVEM_VER}/fx.tar.xz \
-        | tar xJ --strip-components=1 \
-            --exclude alpine/dev --exclude alpine/proc \
-            --exclude alpine/run --exclude alpine/sys \
- && mkdir -p /output/opt/cfx-server-data /output/usr/local/share \
+# Both artifacts ship an alpine/ rootfs; legacy names it alpine/, Enhanced ./alpine/, so extract whole and COPY alpine/ later.
+RUN : "${FIVEM_URL:?set --build-arg FIVEM_URL (see legacy.env / enhanced.env)}" \
+ && wget -O- "${FIVEM_URL}" \
+        | tar xJ --exclude alpine/dev --exclude alpine/proc \
+                 --exclude alpine/run --exclude alpine/sys \
+ && mkdir -p alpine/opt/cfx-server-data alpine/usr/local/share \
  && wget -O- https://github.com/citizenfx/cfx-server-data/archive/${DATA_VER}.tar.gz \
-        | tar xz --strip-components=1 -C opt/cfx-server-data
+        | tar xz --strip-components=1 -C alpine/opt/cfx-server-data
 
-ADD server.cfg opt/cfx-server-data
-ADD entrypoint usr/bin/entrypoint
+ADD server.cfg alpine/opt/cfx-server-data
+ADD entrypoint alpine/usr/bin/entrypoint
 
-RUN chmod +x /output/usr/bin/entrypoint
+RUN chmod +x alpine/usr/bin/entrypoint
 
 #================
 
 FROM scratch
 
-ARG FIVEM_VER
+ARG FIVEM_URL
 ARG FIVEM_NUM
 ARG DATA_VER
 
@@ -35,10 +38,10 @@ LABEL org.opencontainers.image.title="FiveM" \
       org.opencontainers.image.source="https://github.com/Enz0Z/fivem-docker" \
       org.opencontainers.image.description="FXServer (FiveM) dedicated server, auto-updated daily to the recommended artifact." \
       org.opencontainers.image.version=${FIVEM_NUM} \
-      fivem.version=${FIVEM_VER} \
+      fivem.download=${FIVEM_URL} \
       fivem.data_version=${DATA_VER}
 
-COPY --from=builder /output/ /
+COPY --from=builder /fx/alpine/ /
 RUN apk add --no-cache tini
 
 WORKDIR /config

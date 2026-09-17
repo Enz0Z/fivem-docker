@@ -42,10 +42,19 @@ if [ -z "${NO_LICENSE_KEY}${NO_LICENCE_KEY}" ]; then
     CONFIG_ARGS="$CONFIG_ARGS +set sv_licenseKey ${LICENSE_KEY}"
 fi
 
-exec /opt/cfx-server/ld-musl-x86_64.so.1 \
+# Mirrors each artifact's run.sh: FiveM for GTAV Enhanced ships cfx-server, legacy ships FXServer
+if [ -f /opt/cfx-server/cfx-server ]; then
+    LOADER=/lib/ld-musl-x86_64.so.1
+    SERVER=/opt/cfx-server/cfx-server
+else
+    LOADER=/opt/cfx-server/ld-musl-x86_64.so.1
+    SERVER=/opt/cfx-server/FXServer
+fi
+
+exec "$LOADER" \
     --library-path "/usr/lib/v8/:/lib/:/usr/lib/" \
     -- \
-    /opt/cfx-server/FXServer \
+    "$SERVER" \
         +set citizen_dir /opt/cfx-server/citizen/ \
         $CONFIG_ARGS \
         $*

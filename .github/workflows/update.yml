@@ -19,8 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check upstream for a new FiveM build
-        run: ./update.sh
+      - name: Check upstream for new FiveM builds
+        id: versions
+        run: echo "summary=$(./update.sh)" >> "$GITHUB_OUTPUT"
 
       - name: Commit version bump
         id: commit
@@ -28,18 +29,21 @@ jobs:
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
-          num=$(sed -n 's/^ARG FIVEM_NUM=//p' Dockerfile)
           git config user.name "Enz0Z"
           git config user.email "48935178+Enz0Z@users.noreply.github.com"
-          git commit -am "Update FiveM to $num"
+          git commit -am "Update FiveM: ${{ steps.versions.outputs.summary }}"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Build and push image
+      - name: Build and push images
         if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
         run: |
           image="ghcr.io/${GITHUB_REPOSITORY,,}"
-          num=$(sed -n 's/^ARG FIVEM_NUM=//p' Dockerfile)
+          legacy=$(sed -n 's/^FIVEM_NUM=//p' legacy.env)
+          enhanced=$(sed -n 's/^FIVEM_NUM=//p' enhanced.env)
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
-          docker build -t "$image:latest" -t "$image:$num" .
+          docker build $(sed 's/^/--build-arg /' legacy.env) \
+            -t "$image:latest" -t "$image:legacy" -t "$image:$legacy" .
+          docker build $(sed 's/^/--build-arg /' enhanced.env) \
+            -t "$image:enhanced" -t "$image:enhanced-$enhanced" .
           docker push --all-tags "$image"
