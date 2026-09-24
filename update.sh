@@ -23,4 +23,4 @@ data=$(curl -fsSL https://api.github.com/repos/citizenfx/cfx-server-data/commits
 printf 'FIVEM_NUM=%s\nFIVEM_URL=%s\n' "$legacy_num" "$legacy" > legacy.env
 printf 'FIVEM_NUM=%s\nFIVEM_URL=%s\n' "$enhanced_num" "$enhanced_url" > enhanced.env
 sed -i "s/^ARG DATA_VER=.*/ARG DATA_VER=$data/" Dockerfile
-echo "legacy $legacy_num, enhanced $enhanced_num, cfx-server-data $data"
+echo "legacy $legacy_num & enhanced $enhanced_num"
