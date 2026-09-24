@@ -2,7 +2,7 @@
 #   docker build $(sed 's/^/--build-arg /' legacy.env) .
 ARG FIVEM_NUM
 ARG FIVEM_URL
-ARG DATA_VER=32d98e7524b952faf8b220d719615b0346b0a6cc
+ARG DATA_VER=c6afa3909c763e3327ed76825e78453286c99f05
 
 FROM alpine:3.23 AS builder
 
