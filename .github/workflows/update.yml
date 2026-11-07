@@ -6,6 +6,15 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    # Only changes that affect the images; docs-only pushes would just leave untagged duplicates
+    paths:
+      - Dockerfile
+      - entrypoint
+      - server.cfg
+      - "*.env"
+      - update.sh
+      - commit.sh
+      - .github/workflows/update.yml
 
 permissions:
   contents: write
@@ -50,3 +59,14 @@ jobs:
           if [ "$ALL" = true ] || [ "$LEGACY" = true ]; then build legacy -t "$image:latest"; fi
           if [ "$ALL" = true ] || [ "$ENHANCED" = true ]; then build enhanced; fi
           docker push --all-tags "$image"
+
+      # Rebuilt tags leave their previous image untagged. Safe only while images are single-platform:
+      # multi-arch indexes and attestations store their per-platform manifests as untagged versions.
+      - name: Delete untagged images
+        if: github.event_name != 'schedule' || steps.commit.outputs.legacy == 'true' || steps.commit.outputs.enhanced == 'true'
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ github.event.repository.name }}
+          package-type: container
+          delete-only-untagged-versions: "true"
+          min-versions-to-keep: 0
