@@ -7,11 +7,12 @@ Two editions are published from the same Dockerfile:
 
 | Edition | Tags | Upstream |
 |---|---|---|
-| FiveM (legacy GTA V) | `latest`, `legacy`, `<build>` (e.g. `35245`) | `recommended` build from the [artifact feed](https://changelogs-live.fivem.net/api/changelog/versions/linux/server) |
-| FiveM for GTAV Enhanced | `enhanced`, `enhanced-<build>` (e.g. `enhanced-139`) | current build on the [Server Download](https://docs.fivem.net/docs/server-download/) page (`cfx-server_linux_x64.tar.xz`) |
+| FiveM (legacy GTA V) | `latest`, `legacy`, `legacy-<build>` (e.g. `legacy-38435`) | `recommended` build from the [artifact feed](https://changelogs-live.fivem.net/api/changelog/versions/linux/server) |
+| FiveM for GTAV Enhanced | `enhanced`, `enhanced-<build>` (e.g. `enhanced-170`) | current build on the [Server Download](https://docs.fivem.net/docs/server-download/) page (`cfx-server_linux_x64.tar.xz`) |
 
-A GitHub Actions workflow checks both upstreams **every day** and, when either changes, bumps `legacy.env` / `enhanced.env`,
-commits and pushes fresh images to `ghcr.io/enz0z/fivem-docker`.
+A GitHub Actions workflow checks both upstreams and `cfx-server-data` **every day**. Each change gets its own commit
+(e.g. `build: bump legacy 38317 -> 38435`) and only the affected images are rebuilt and pushed to `ghcr.io/enz0z/fivem-docker`.
+Tags without prefix (e.g. `35245`) are older legacy builds published before the `legacy-<build>` scheme.
 
 ## Usage
 
@@ -75,7 +76,7 @@ Set `NO_DEFAULT_CONFIG=1`, expose port `40120` and mount `/txData` to persist it
 ## Manual update / local build
 
 ```sh
-./update.sh && git commit -am "Update FiveM" && git push
+./update.sh && ./commit.sh && git push   # one commit per change, same messages as CI
 docker build $(sed 's/^/--build-arg /' enhanced.env) -t fivem:enhanced .   # or legacy.env
 ```
 
