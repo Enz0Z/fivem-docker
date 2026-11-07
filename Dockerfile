@@ -45,7 +45,6 @@ COPY --from=builder /fx/alpine/ /
 RUN apk add --no-cache tini
 
 WORKDIR /config
-EXPOSE 30120
 
 # Default to an empty CMD, so we can use it to add separate args to the binary
 CMD [""]
